@@ -1,4 +1,4 @@
-# Gestión de Préstamos Personales
+# Gestión de Préstamos Personales💰🏦
 
 Proyecto desarrollado en **Java con Spring Boot**, siguiendo principios de **Clean Architecture**. Permite gestionar clientes, préstamos y pagos, con un enfoque en código mantenible y escalable.
 
