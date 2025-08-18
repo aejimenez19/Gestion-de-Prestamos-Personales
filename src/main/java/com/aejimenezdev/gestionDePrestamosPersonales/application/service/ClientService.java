@@ -1,0 +1,34 @@
+package com.aejimenezdev.gestionDePrestamosPersonales.application.service;
+
+import com.aejimenezdev.gestionDePrestamosPersonales.application.usercase.ClientUserCase;
+import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.ClientModel;
+import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.ClientRepository;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientSaveException;
+import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.request.ClientDtoRequest;
+import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.ClientDtoResponse;
+import com.aejimenezdev.gestionDePrestamosPersonales.web.mapper.ClientWebMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class ClientService implements ClientUserCase {
+
+    private final ClientRepository clientRepository;
+    private final ClientWebMapper clientWebMapper;
+
+    @Override
+    public ClientDtoResponse saveClient(ClientDtoRequest clientDtoRequest) {
+        log.info("Iniciando guardado de cliente: {}", clientDtoRequest);
+        try {
+            ClientModel clientModel = clientWebMapper.toModel(clientDtoRequest);
+            ClientModel savedModel = clientRepository.save(clientModel);
+            return clientWebMapper.toDtoResponse(savedModel);
+        } catch (Exception e) {
+            log.error("Error saving client: {}", clientDtoRequest, e);
+            throw new ClientSaveException("Error saving client", e);
+        }
+    }
+}

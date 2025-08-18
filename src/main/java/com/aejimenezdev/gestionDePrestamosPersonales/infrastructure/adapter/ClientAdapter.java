@@ -1,0 +1,34 @@
+package com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.adapter;
+
+import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.ClientModel;
+import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.ClientRepository;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientSaveException;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Repository.ClientsJpaRepository;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.entity.ClientEntity;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.mapper.ClientMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+@Repository
+@RequiredArgsConstructor
+@Slf4j
+public class ClientAdapter implements ClientRepository {
+    private final ClientsJpaRepository clientsJpaRepository;
+    private final ClientMapper clientMapper;
+
+      @Override
+      @Transactional
+      public ClientModel save(ClientModel clientModel) {
+          try {
+              log.info("persisting client in database: {}", clientModel);
+              ClientEntity clientEntity = clientMapper.toEntity(clientModel);
+              ClientEntity savedEntity = clientsJpaRepository.save(clientEntity);
+              return clientMapper.toModel(savedEntity);
+          } catch (Exception e) {
+              log.error("Error persisting client in database: {}", clientModel, e);
+              throw new ClientSaveException("Error persisting client in database: " + e.getMessage(), e);
+          }
+      }
+}
