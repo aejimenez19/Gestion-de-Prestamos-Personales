@@ -12,13 +12,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class ClientDtoRequest {
-    @NotBlank
+    @NotBlank(message = "Identification number is required")
     private String identificationNumber;
-    @NotBlank
+    @NotBlank(message = "Name is required")
     private String name;
-    @Email
+    @Email(message = "Email should be valid")
     private String email;
-    @NotBlank
+    @NotBlank(message = "Phone number is required")
     private String phoneNumber;
 
 }
