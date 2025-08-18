@@ -3,6 +3,7 @@ package com.aejimenezdev.gestionDePrestamosPersonales.application.service;
 import com.aejimenezdev.gestionDePrestamosPersonales.application.usercase.ClientUserCase;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.ClientModel;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.ClientRepository;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientExitException;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientSaveException;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.request.ClientDtoRequest;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.ClientDtoResponse;
@@ -22,6 +23,10 @@ public class ClientService implements ClientUserCase {
     @Override
     public ClientDtoResponse saveClient(ClientDtoRequest clientDtoRequest) {
         log.info("Iniciando guardado de cliente: {}", clientDtoRequest);
+        if (clientRepository.existsByIdentificationNumber(clientDtoRequest.getIdentificationNumber())) {
+            log.warn("The client with the identification number {} already exists", clientDtoRequest.getIdentificationNumber());
+            throw new ClientExitException("The client already exists with the provided ID number");
+        }
         try {
             ClientModel clientModel = clientWebMapper.toModel(clientDtoRequest);
             ClientModel savedModel = clientRepository.save(clientModel);

@@ -1,5 +1,6 @@
 package com.aejimenezdev.gestionDePrestamosPersonales.web.exception;
 
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientExitException;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientSaveException;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.ErrorResponse;
 import jakarta.validation.ValidationException;
@@ -30,5 +31,14 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST.value()
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler(ClientExitException.class)
+    public ResponseEntity<ErrorResponse> clientExitException(ClientExitException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                ex.getMessage(),
+                HttpStatus.CONFLICT.value()
+        );
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 }

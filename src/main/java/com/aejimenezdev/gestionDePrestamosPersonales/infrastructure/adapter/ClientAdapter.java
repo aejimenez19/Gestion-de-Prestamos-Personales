@@ -31,4 +31,12 @@ public class ClientAdapter implements ClientRepository {
               throw new ClientSaveException("Error persisting client in database: " + e.getMessage(), e);
           }
       }
+
+    @Override
+    public Boolean existsByIdentificationNumber(String identificationNumber) {
+        log.info("Checking if client exists by identification number: {}", identificationNumber);
+        return  clientsJpaRepository.existsByIdentificationNumber(identificationNumber);
+    }
+
+
 }

@@ -7,4 +7,6 @@ import java.util.UUID;
 
 
 public interface ClientsJpaRepository extends JpaRepository<ClientEntity, UUID> {
+
+    Boolean existsByIdentificationNumber(String identificationNumber);
 }
