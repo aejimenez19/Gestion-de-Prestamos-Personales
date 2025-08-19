@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 @RequiredArgsConstructor
 @Slf4j
@@ -36,6 +38,17 @@ public class ClientAdapter implements ClientRepository {
     public Boolean existsByIdentificationNumber(String identificationNumber) {
         log.info("Checking if client exists by identification number: {}", identificationNumber);
         return  clientsJpaRepository.existsByIdentificationNumber(identificationNumber);
+    }
+
+    @Override
+    public List<ClientModel> findAllClient() {
+        try {
+            log.info("Get all the clients");
+            return clientsJpaRepository.findAll().stream().map(clientMapper::toModel).toList();
+        } catch (Exception e) {
+            log.error("error getting all clients");
+            throw new RuntimeException("error getting all clients", e);
+        }
     }
 
 

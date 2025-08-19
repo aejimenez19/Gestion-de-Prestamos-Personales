@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ClientRepository {
     ClientModel save(ClientModel clientModel);
-
     Boolean existsByIdentificationNumber(String identificationNumber);
+    List<ClientModel> findAllClient();
 }
