@@ -4,7 +4,7 @@ import com.aejimenezdev.gestionDePrestamosPersonales.application.usercase.Client
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.ClientModel;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.ClientRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientExitException;
-import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientSaveException;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.SaveException;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.request.ClientDtoRequest;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.ClientDtoResponse;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.mapper.ClientWebMapper;
@@ -35,7 +35,7 @@ public class ClientService implements ClientUserCase {
             return clientWebMapper.toDtoResponse(savedModel);
         } catch (Exception e) {
             log.error("Error saving client: {}", clientDtoRequest, e);
-            throw new ClientSaveException("Error saving client", e);
+            throw new SaveException("Error saving client", e);
         }
     }
 

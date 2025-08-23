@@ -2,7 +2,7 @@ package com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.adapter;
 
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.ClientModel;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.ClientRepository;
-import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientSaveException;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.SaveException;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Repository.ClientsJpaRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.entity.ClientEntity;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.mapper.ClientMapper;
@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ public class ClientAdapter implements ClientRepository {
               return clientMapper.toModel(savedEntity);
           } catch (Exception e) {
               log.error("Error persisting client in database: {}", clientModel, e);
-              throw new ClientSaveException("Error persisting client in database: " + e.getMessage(), e);
+              throw new SaveException("Error persisting client in database: " + e.getMessage(), e);
           }
       }
 
@@ -38,6 +39,12 @@ public class ClientAdapter implements ClientRepository {
     public Boolean existsByIdentificationNumber(String identificationNumber) {
         log.info("Checking if client exists by identification number: {}", identificationNumber);
         return  clientsJpaRepository.existsByIdentificationNumber(identificationNumber);
+    }
+
+    @Override
+    public Boolean existsById(UUID id) {
+        log.info("Checking if client exists by identification number: {}", id);
+        return  clientsJpaRepository.existsById(id);
     }
 
     @Override

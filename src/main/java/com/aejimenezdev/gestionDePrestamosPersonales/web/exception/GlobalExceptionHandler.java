@@ -1,22 +1,19 @@
 package com.aejimenezdev.gestionDePrestamosPersonales.web.exception;
 
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientExitException;
-import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientSaveException;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.SaveException;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.ErrorResponse;
-import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.net.http.HttpResponse;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(ClientSaveException.class)
-    public ResponseEntity<ErrorResponse> ClientSaveException(ClientSaveException ex) {
+    @ExceptionHandler(SaveException.class)
+    public ResponseEntity<ErrorResponse> SaveException(SaveException ex) {
         ErrorResponse errorResponse = new ErrorResponse(
                 ex.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value()
