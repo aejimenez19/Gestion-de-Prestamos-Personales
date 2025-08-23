@@ -10,9 +10,9 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class paymentModel {
+public class PaymentModel {
     private UUID id;
     private UUID loanId;
-    private String amount;
+    private Double amount;
     private LocalDate paymentDate;
 }

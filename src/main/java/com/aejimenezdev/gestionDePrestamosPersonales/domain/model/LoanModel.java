@@ -11,11 +11,11 @@ import java.util.UUID;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoanModel {
+public class    LoanModel {
     private UUID id;
     private UUID clientId;
-    private String monthlyInterestRate;
+    private Double monthlyInterestRate;
     private Double amount;
     private LocalDate startDate;
-    private List<paymentModel>  payments;
+    private List<PaymentModel>  payments;
 }
