@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -38,6 +39,12 @@ public class ClientAdapter implements ClientRepository {
     public Boolean existsByIdentificationNumber(String identificationNumber) {
         log.info("Checking if client exists by identification number: {}", identificationNumber);
         return  clientsJpaRepository.existsByIdentificationNumber(identificationNumber);
+    }
+
+    @Override
+    public Boolean existsById(UUID id) {
+        log.info("Checking if client exists by identification number: {}", id);
+        return  clientsJpaRepository.existsById(id);
     }
 
     @Override
