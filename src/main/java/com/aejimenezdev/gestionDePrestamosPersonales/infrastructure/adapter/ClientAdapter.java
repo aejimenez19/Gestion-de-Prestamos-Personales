@@ -2,7 +2,7 @@ package com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.adapter;
 
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.ClientModel;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.ClientRepository;
-import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientSaveException;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.SaveException;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Repository.ClientsJpaRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.entity.ClientEntity;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.mapper.ClientMapper;
@@ -30,7 +30,7 @@ public class ClientAdapter implements ClientRepository {
               return clientMapper.toModel(savedEntity);
           } catch (Exception e) {
               log.error("Error persisting client in database: {}", clientModel, e);
-              throw new ClientSaveException("Error persisting client in database: " + e.getMessage(), e);
+              throw new SaveException("Error persisting client in database: " + e.getMessage(), e);
           }
       }
 
