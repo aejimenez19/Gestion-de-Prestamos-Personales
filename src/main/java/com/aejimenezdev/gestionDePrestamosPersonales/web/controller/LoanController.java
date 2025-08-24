@@ -8,10 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/loans")
@@ -27,5 +27,13 @@ public class LoanController {
         LoanDtoResponse savedLoan = loanUserCase.saveLoan(loanDtoRequest);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(savedLoan);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<LoanDtoResponse>> getAllLoansByUserId(@PathVariable UUID userId) {
+        log.info("Received request to get all loans for user ID: {}", userId);
+        List<LoanDtoResponse> loans = loanUserCase.findAllLoansByUserId(userId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(loans);
     }
 }

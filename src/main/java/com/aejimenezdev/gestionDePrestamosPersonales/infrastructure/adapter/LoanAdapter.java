@@ -3,7 +3,9 @@ package com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.adapter;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.LoanModel;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.LoanRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.SaveException;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.findException;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Repository.LoanJpaRepository;
+import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.entity.ClientEntity;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.entity.LoanEntity;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.mapper.LoanMapper;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +25,16 @@ public class LoanAdapter implements LoanRepository {
 
     @Override
     public List<LoanModel> findAllLoansByClientId(UUID clientId) {
-        return List.of();
+        log.info("fetching loans from database for clientId: {}", clientId);
+        try {
+            ClientEntity clientEntity = new ClientEntity();
+            clientEntity.setId(clientId);
+            List<LoanEntity> loanEntities = loanJpaRepository.findAllByClientId(clientEntity);
+            return loanEntities.stream().map(loanMapper::toModel).toList();
+        } catch (Exception e) {
+            log.error("Error fetching loans from database for clientId: {}", clientId, e);
+            throw new findException("Error fetching loans from database for clientId: " + e.getMessage(), e);
+        }
     }
 
     @Override
@@ -37,4 +48,6 @@ public class LoanAdapter implements LoanRepository {
             throw new SaveException("Error persisting loan in database: " + e.getMessage(), e);
         }
     }
+
+
 }
