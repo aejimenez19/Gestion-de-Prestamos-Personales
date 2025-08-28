@@ -30,7 +30,7 @@ public class LoanController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<List<LoanDtoResponse>> getAllLoansByUserId(@PathVariable UUID userId) {
+    public ResponseEntity<List<LoanDtoResponse>> getAllLoansByUserId(@PathVariable("userId") UUID userId) {
         log.info("Received request to get all loans for user ID: {}", userId);
         List<LoanDtoResponse> loans = loanUserCase.findAllLoansByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK)
