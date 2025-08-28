@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,5 +41,17 @@ public class LoanService implements LoanUserCase {
 
         LoanModel loanModel = loanRepository.saveLoan(loanWebMapper.toModel(loanDtoRequest));
         return loanWebMapper.toDtoResponse(loanModel);
+    }
+
+    @Override
+    public List<LoanDtoResponse> findAllLoansByUserId(UUID userId) {
+        log.info("Finding all loans by user ID: {}", userId);
+        if (!clientRepository.existsById(userId)) {
+            log.warn("The client with the identification number {} not exists", userId);
+            throw new ClientExitException("The client not exists with the provided ID number");
+        }
+
+        List<LoanModel> loanModels = loanRepository.findAllLoansByClientId(userId);
+        return loanModels.stream().map(loanWebMapper::toDtoResponse).toList();
     }
 }
