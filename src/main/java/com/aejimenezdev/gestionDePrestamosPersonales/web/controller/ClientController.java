@@ -24,7 +24,7 @@ public class ClientController {
     public ResponseEntity<ClientDtoResponse> saveClient(@Valid @RequestBody ClientDtoRequest clientDtoRequest) {
         log.info("Received request to save client: {}", clientDtoRequest);
         ClientDtoResponse savedClient = clientUserCase.saveClient(clientDtoRequest);
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedClient);
     }
 

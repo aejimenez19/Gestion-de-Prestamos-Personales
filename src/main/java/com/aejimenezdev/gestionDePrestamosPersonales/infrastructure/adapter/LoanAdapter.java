@@ -49,5 +49,15 @@ public class LoanAdapter implements LoanRepository {
         }
     }
 
+    @Override
+    public Boolean existsById(UUID id) {
+        try {
+            log.info("checking existence of loan in database for id: {}", id);
+            return loanJpaRepository.existsById(id);
+        } catch (Exception e) {
+            log.error("Error checking existence of loan in database for id: {}", id, e);
+            throw new findException("Error checking existence of loan in database for id: " + e.getMessage(), e);
+        }
+    }
 
 }
