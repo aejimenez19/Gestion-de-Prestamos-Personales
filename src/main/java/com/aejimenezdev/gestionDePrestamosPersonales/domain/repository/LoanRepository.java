@@ -9,4 +9,5 @@ public interface LoanRepository {
 
     List<LoanModel> findAllLoansByClientId(UUID clientId);
     LoanModel saveLoan(LoanModel loanModel);
+    Boolean existsById(UUID id);
 }

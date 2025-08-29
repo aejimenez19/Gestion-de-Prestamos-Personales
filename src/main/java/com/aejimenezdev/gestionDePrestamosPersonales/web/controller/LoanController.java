@@ -25,7 +25,7 @@ public class LoanController {
     public ResponseEntity<LoanDtoResponse> saveLoan(@Valid @RequestBody LoanDtoRequest loanDtoRequest) {
         log.info("Received request to save loan: {}", loanDtoRequest);
         LoanDtoResponse savedLoan = loanUserCase.saveLoan(loanDtoRequest);
-        return ResponseEntity.status(HttpStatus.OK)
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .body(savedLoan);
     }
 
