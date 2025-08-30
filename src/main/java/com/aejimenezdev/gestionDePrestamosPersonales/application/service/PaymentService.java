@@ -1,10 +1,13 @@
 package com.aejimenezdev.gestionDePrestamosPersonales.application.service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 
 import com.aejimenezdev.gestionDePrestamosPersonales.application.usercase.PaymentUserCase;
+import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.PaymentModel;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.LoanRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.PaymentRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientExitException;
@@ -36,7 +39,21 @@ public class PaymentService implements PaymentUserCase {
             LocalDate localDate = LocalDate.now();
             paymentDtoRequest.setPaymentDate(localDate);
         }
-        
+
         return paymentWebMapper.toDto(paymentRepository.save(paymentWebMapper.toModel(paymentDtoRequest)));
     }
+
+    @Override
+    public List<PaymentDtoResponse> getPaymentsByLoanId(UUID loanId) {
+
+        if (!loanRepository.existsById(loanId)) {
+            log.error("the loan with the identification number: {} not exists", loanId);
+            throw new ClientExitException("the loan not exists with the provided ID number");
+        }
+
+        log.info("Retrieving payments for loanId: {}", loanId);
+        List<PaymentModel> payments = paymentRepository.findByLoanId(loanId);
+        return payments.stream().map(paymentWebMapper::toDto).toList();
+    }
+
 }
