@@ -7,14 +7,12 @@ import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.PaymentModel;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.ClientRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.LoanRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientExitException;
-import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.entity.LoanEntity;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.request.LoanDtoRequest;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanDtoResponse;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.mapper.LoanWebMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
