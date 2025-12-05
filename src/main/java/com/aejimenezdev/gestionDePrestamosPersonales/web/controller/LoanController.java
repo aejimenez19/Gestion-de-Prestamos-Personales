@@ -3,6 +3,11 @@ package com.aejimenezdev.gestionDePrestamosPersonales.web.controller;
 import com.aejimenezdev.gestionDePrestamosPersonales.application.usercase.LoanUserCase;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.request.LoanDtoRequest;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanDtoResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +26,12 @@ public class LoanController {
 
     private final LoanUserCase loanUserCase;
 
+    @Operation(summary = "Crear un nuevo préstamo", description = "Crea un préstamo para un cliente existente.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Préstamo creado exitosamente",
+                content = @Content(schema = @Schema(implementation = LoanDtoResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
+    })
     @PostMapping
     public ResponseEntity<LoanDtoResponse> saveLoan(@Valid @RequestBody LoanDtoRequest loanDtoRequest) {
         log.info("Received request to save loan: {}", loanDtoRequest);
@@ -29,6 +40,11 @@ public class LoanController {
                 .body(savedLoan);
     }
 
+    @Operation(summary = "Listar préstamos por cliente", description = "Obtiene todos los préstamos de un usuario dado su ID.")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Operación exitosa",
+                content = @Content(schema = @Schema(implementation = LoanDtoResponse.class)))
+    })
     @GetMapping("/{userId}")
     public ResponseEntity<List<LoanDtoResponse>> getAllLoansByUserId(@PathVariable("userId") UUID userId) {
         log.info("Received request to get all loans for user ID: {}", userId);
