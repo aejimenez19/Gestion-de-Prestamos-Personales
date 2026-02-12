@@ -44,7 +44,7 @@ public class PaymentService implements PaymentUserCase {
     }
 
     @Override
-    public List<PaymentDtoResponse> getPaymentsByLoanId(UUID loanId) {
+    public List<PaymentDtoResponse> getPaymentsByLoanId(Long loanId) {
 
         if (!loanRepository.existsById(loanId)) {
             log.error("the loan with the identification number: {} not exists", loanId);

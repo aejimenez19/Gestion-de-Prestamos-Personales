@@ -37,7 +37,7 @@ public class PaymentAdapter implements PaymentRepository {
     }
 
     @Override
-    public List<PaymentModel> findByLoanId(UUID loanId) {
+    public List<PaymentModel> findByLoanId(Long loanId) {
         log.info("Retrieving payments for loanId: {}", loanId);
         LoanEntity loanEntity = new LoanEntity();
         loanEntity.setId(loanId);

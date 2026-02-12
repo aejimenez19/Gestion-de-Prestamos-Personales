@@ -45,14 +45,32 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.OK).body(providers);
     }
 
-    @Operation(summary = "Listar todos los clientes", description = "Obtiene la lista de todos los clientes registrados.")
+    @Operation(summary = "Obtener todos los prestamos por prestador del usuario",
+            description = "Obtiene una lista de todos los préstamos que el cliente ha tenido con un prestador específico.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Operación exitosa",
-                content = @Content(schema = @Schema(implementation = ClientDtoResponse.class)))
+            @ApiResponse(responseCode = "200", description = "Operación exitosa",
+                    content = @Content(schema = @Schema(implementation = ClientDtoResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
     })
-    @GetMapping
-    public ResponseEntity<List<ClientDtoResponse>> findAllClient(){
-        log.info("Request was received to get all clients");
-        return ResponseEntity.status(HttpStatus.OK).body(clientUserCase.findAllClient());
+    @GetMapping("/findLoansByProvider")
+    public ResponseEntity<List<LoanDtoResponse>> findAllLoanWithProvider(
+            @RequestParam Long providerId,
+            @RequestHeader("X-User-Id") Long clientId
+    ) {
+        List<LoanDtoResponse> loans = loanUserCase.findAllLoansByProviderId(clientId, providerId);
+        return ResponseEntity.status(HttpStatus.OK).body(loans);
     }
+
+    //Obtener historial de prestamos por proveedor
+    @Operation(summary = "Obtener el detalle de un préstamo específico",
+            description = "Obtiene el detalle de un préstamo específico que el cliente ha tenido con un prestador.")
+    @GetMapping("/findLoanDetailByLoanId")
+    public ResponseEntity<LoanDetailDtoResponse> findLoanDetailByLoanId(
+            @RequestParam Long loanId,
+            @RequestHeader("X-User-Id") Long clientId
+    ) {
+        LoanDetailDtoResponse loanDetail = loanUserCase.findLoanById(clientId, loanId);
+        return ResponseEntity.status(HttpStatus.OK).body(loanDetail);
+    }
+
 }

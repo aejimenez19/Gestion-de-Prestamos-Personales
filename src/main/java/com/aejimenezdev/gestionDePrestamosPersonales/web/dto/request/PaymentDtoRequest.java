@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PaymentDtoRequest {
     @NotNull(message = "Loan ID cannot be null")
-    private UUID loanId;
+    private Long loanId;
     @NotNull(message = "Amount cannot be null")
     @Positive(message = "Amount must be positive")
     private double amount;

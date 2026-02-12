@@ -49,7 +49,7 @@ public class PaymentController {
                 content = @Content(schema = @Schema(implementation = PaymentDtoResponse.class)))
     })
     @GetMapping("{loanId}")
-    public ResponseEntity<List<PaymentDtoResponse>> getPaymentsByLoanId(@PathVariable("loanId") UUID loanId) {
+    public ResponseEntity<List<PaymentDtoResponse>> getPaymentsByLoanId(@PathVariable("loanId") Long loanId) {
         log.info("Received request to get payments for loanId: {}", loanId);
         List<PaymentDtoResponse> payments = paymentUserCase.getPaymentsByLoanId(loanId);
         return ResponseEntity.status(HttpStatus.OK).body(payments);

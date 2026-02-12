@@ -9,5 +9,5 @@ public interface PaymentRepository {
 
     PaymentModel save(PaymentModel paymentModel);
 
-    List<PaymentModel> findByLoanId(UUID loanId);
+    List<PaymentModel> findByLoanId(Long loanId);
 }
