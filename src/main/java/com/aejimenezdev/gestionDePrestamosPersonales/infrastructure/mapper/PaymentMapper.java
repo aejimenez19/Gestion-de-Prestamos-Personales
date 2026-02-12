@@ -18,7 +18,7 @@ public interface PaymentMapper {
     @Mapping(target = "loanId", source = "loanId.id")
     PaymentModel toModel(PaymentEntity paymentEntity);
 
-    default LoanEntity map(UUID loanId) {
+    default LoanEntity map(Long loanId) {
         if (loanId == null) {
             return null;
         }

@@ -13,8 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class PaymentModel {
-    private UUID id;
-    private UUID loanId;
+    private Long id;
+    private Long loanId;
     private Double amount;
     private LocalDate paymentDate;
 }

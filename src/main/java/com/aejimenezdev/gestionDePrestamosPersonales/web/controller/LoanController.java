@@ -46,7 +46,7 @@ public class LoanController {
                 content = @Content(schema = @Schema(implementation = LoanDtoResponse.class)))
     })
     @GetMapping("/{userId}")
-    public ResponseEntity<List<LoanDtoResponse>> getAllLoansByUserId(@PathVariable("userId") UUID userId) {
+    public ResponseEntity<List<LoanDtoResponse>> getAllLoansByUserId(@PathVariable("userId") Long userId) {
         log.info("Received request to get all loans for user ID: {}", userId);
         List<LoanDtoResponse> loans = loanUserCase.findAllLoansByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK)

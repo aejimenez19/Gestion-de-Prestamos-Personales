@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class LoanDtoRequest {
     @NotNull(message = "Client ID cannot be null")
-    private UUID clientId;
+    private Long clientId;
     @Positive(message = "The amount must be positive")
     @NotNull( message = "Amount cannot be null")
     private Double amount;

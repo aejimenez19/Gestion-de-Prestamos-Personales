@@ -18,15 +18,25 @@ import java.util.UUID;
 @NoArgsConstructor
 public class LoanEntity {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @ManyToOne
     @JoinColumn(name = "client_id", nullable = false)
     @JsonBackReference
     private ClientEntity clientId;
+
+    @ManyToOne
+    @JoinColumn(name = "provider_id", nullable = false)
+    @JsonBackReference
+    private ClientEntity providerId;
+
     private Double monthlyInterestRate;
+
     private Double amount;
+
     private LocalDate startDate;
+
     @OneToMany( mappedBy = "loanId",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<PaymentEntity> payments = new java.util.ArrayList<>();

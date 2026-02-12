@@ -8,5 +8,5 @@ import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.PaymentDto
 
 public interface PaymentUserCase {
     PaymentDtoResponse savePayment(PaymentDtoRequest paymentDtoRequest);
-    List<PaymentDtoResponse> getPaymentsByLoanId(UUID loanId);
+    List<PaymentDtoResponse> getPaymentsByLoanId(Long loanId);
 }

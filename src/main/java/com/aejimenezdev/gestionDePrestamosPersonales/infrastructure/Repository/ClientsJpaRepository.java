@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 
-public interface ClientsJpaRepository extends JpaRepository<ClientEntity, UUID> {
+public interface ClientsJpaRepository extends JpaRepository<ClientEntity, Long> {
 
-    Boolean existsByIdentificationNumber(String identificationNumber);
+    Boolean existsByIdentifier(String identificationNumber);
 }

@@ -16,8 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class PaymentEntity {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @ManyToOne
     @JoinColumn(name = "loan_id", nullable = false)
     @JsonBackReference

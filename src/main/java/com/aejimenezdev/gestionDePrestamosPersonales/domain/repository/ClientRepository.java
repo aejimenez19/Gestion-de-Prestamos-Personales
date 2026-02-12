@@ -8,6 +8,6 @@ import java.util.UUID;
 public interface ClientRepository {
     ClientModel save(ClientModel clientModel);
     Boolean existsByIdentificationNumber(String identificationNumber);
-    Boolean existsById(UUID id);
+    Boolean existsById(Long id);
     List<ClientModel> findAllClient();
 }
