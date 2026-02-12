@@ -7,9 +7,9 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ClientMapper {
-    @Mapping(target = "loans", ignore = true)
+    @Mapping(target = "clientLoans", ignore = true)
     ClientEntity toEntity(ClientModel clientModel);
 
-    @Mapping(target = "loans", ignore = true)
+    @Mapping(target = "clientLoans", ignore = true)
     ClientModel toModel(ClientEntity clientEntity);
 }

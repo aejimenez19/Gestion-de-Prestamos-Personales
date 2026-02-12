@@ -38,11 +38,11 @@ public class ClientAdapter implements ClientRepository {
     @Override
     public Boolean existsByIdentificationNumber(String identificationNumber) {
         log.info("Checking if client exists by identification number: {}", identificationNumber);
-        return  clientsJpaRepository.existsByIdentificationNumber(identificationNumber);
+        return  clientsJpaRepository.existsByIdentifier(identificationNumber);
     }
 
     @Override
-    public Boolean existsById(UUID id) {
+    public Boolean existsById(Long id) {
         log.info("Checking if client exists by identification number: {}", id);
         return  clientsJpaRepository.existsById(id);
     }

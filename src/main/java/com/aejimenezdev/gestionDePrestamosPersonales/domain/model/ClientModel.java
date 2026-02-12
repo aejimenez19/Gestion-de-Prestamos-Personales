@@ -13,10 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class ClientModel {
-    private UUID id;
-    private String identificationNumber;
+    private Long id;
+    private String identifier;
     private String name;
     private String email;
-    private String phoneNumber;
-    private List<LoanModel> loans;
+    private String phone;
+    private List<LoanModel> clientLoans;
 }

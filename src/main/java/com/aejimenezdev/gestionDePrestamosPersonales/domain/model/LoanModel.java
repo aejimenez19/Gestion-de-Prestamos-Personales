@@ -13,9 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class    LoanModel {
-    private UUID id;
-    private UUID clientId;
+public class LoanModel {
+    private Long id;
+    private Long clientId;
+    private ClientModel providerId;
     private Double monthlyInterestRate;
     private Double amount;
     private LocalDate startDate;

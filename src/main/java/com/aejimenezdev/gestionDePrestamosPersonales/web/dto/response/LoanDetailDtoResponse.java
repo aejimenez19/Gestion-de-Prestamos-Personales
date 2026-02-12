@@ -1,19 +1,17 @@
 package com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
+import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class LoanDtoResponse implements LoanSumary{
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor
+public class LoanDetailDtoResponse implements LoanSumary{
     private Long id;
     private Long clientId;
     private Double amount;
@@ -25,4 +23,5 @@ public class LoanDtoResponse implements LoanSumary{
     private BigDecimal principalOutstanding;
     private BigDecimal totalPaidAmount;
     private int elapsedMonths;
+    private List<PaymentDtoResponse> payments;
 }

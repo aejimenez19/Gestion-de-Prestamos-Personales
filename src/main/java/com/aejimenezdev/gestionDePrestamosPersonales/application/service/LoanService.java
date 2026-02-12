@@ -8,7 +8,9 @@ import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.ClientRep
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.LoanRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientExitException;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.request.LoanDtoRequest;
+import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanDetailDtoResponse;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanDtoResponse;
+import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanSumary;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.mapper.LoanWebMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +31,12 @@ public class LoanService implements LoanUserCase {
     private final ClientRepository clientRepository;
     private final LoanRepository loanRepository;
     private final LoanWebMapper loanWebMapper;
+    private final LoanCalculator loanCalculator;
 
     @Override
     public LoanDtoResponse saveLoan(LoanDtoRequest loanDtoRequest) {
         log.info("Starting loan save: {}", loanDtoRequest);
-        if (!clientRepository.existsById(loanDtoRequest.getClientId())) {
-            log.warn("The client with the identification number {} not exists", loanDtoRequest.getClientId());
-            throw new ClientExitException("The client not exists with the provided ID number");
-        }
+        validateClientExists(loanDtoRequest.getClientId());
 
         if (loanDtoRequest.getStartDate() == null || loanDtoRequest.getStartDate().toString().isBlank()) {
             LocalDate localDate = LocalDate.now();
@@ -48,22 +48,46 @@ public class LoanService implements LoanUserCase {
     }
 
     @Override
-    public List<LoanDtoResponse> findAllLoansByUserId(UUID userId) {
+    public List<LoanDtoResponse> findAllLoansByUserId(Long userId) {
         log.info("Finding all loans by user ID: {}", userId);
-        if (!clientRepository.existsById(userId)) {
-            log.warn("The client with the identification number {} not exists", userId);
-            throw new ClientExitException("The client not exists with the provided ID number");
-        }
+        validateClientExists(userId);
 
         List<LoanModel> loanModels = loanRepository.findAllLoansByClientId(userId);
-        return loanModels.stream().map(loanModel -> buildLoanDtoResponse(loanModel)).toList();
+        return loanModels.stream().map(this::buildLoanDtoResponse).toList();
+    }
+
+    @Override
+    public List<LoanDtoResponse> findAllLoansByProviderId(Long clientId, Long providerId) {
+        log.info("Finding all loans by provider ID: {} for client ID: {}", providerId, clientId);
+        validateClientExists(clientId);
+        validateClientExists(providerId);
+
+        List<LoanModel> loanModels = loanRepository.findAllLoansByClientIdAndProviderId(clientId, providerId);
+        if (loanModels.isEmpty()) {
+            log.info("No loans found for client ID: {} with provider ID: {}", clientId, providerId);
+            return List.of();
+        }
+        return loanModels.stream().map(this::buildLoanDtoResponse).toList();
+
+    }
+
+    @Override
+    public LoanDetailDtoResponse findLoanById(Long clientId, Long loanId) {
+        log.info("Finding loan details for loan ID: {} and client ID: {}", loanId, clientId);
+        LoanModel loanModel = loanRepository.findById(loanId);
+        validateClientExists(clientId);
+
+        LoanDetailDtoResponse detailLoan = loanWebMapper.toDetailDtoResponse(loanModel);
+        detailLoan.setElapsedMonths(loanCalculator.calculateElapsedMonths(loanModel.getStartDate()));
+        loanCalculator.calculationStatus(detailLoan, loanModel, detailLoan.getElapsedMonths());
+        return detailLoan;
     }
 
     private LoanDtoResponse buildLoanDtoResponse(LoanModel loanModel) {
         if (loanModel == null) {
             return null;
         }
-        int elapsedMonths = calculateElapsedMonths(loanModel.getStartDate());
+        int elapsedMonths = loanCalculator.calculateElapsedMonths(loanModel.getStartDate());
         LoanDtoResponse loanDtoResponse = LoanDtoResponse.builder()
                 .id(loanModel.getId())
                 .clientId(loanModel.getClientId())
@@ -72,54 +96,15 @@ public class LoanService implements LoanUserCase {
                 .startDate(loanModel.getStartDate())
                 .elapsedMonths(elapsedMonths)
                 .build();
-        loanDtoResponse = calculationStatus(loanDtoResponse, loanModel, elapsedMonths);
+        loanCalculator.calculationStatus(loanDtoResponse, loanModel, elapsedMonths);
         return loanDtoResponse;
     }
 
-    private int calculateElapsedMonths(LocalDate startDate) {
-        log.info("Calculating elapsed months for loan starting on: {}", startDate);
-        LocalDate currentDate = LocalDate.now();
-        return Period.between(startDate, currentDate).getMonths()
-                + Period.between(startDate, currentDate).getYears() * 12;
-    }
-
-    private LoanDtoResponse calculationStatus(LoanDtoResponse loanDtoResponse, LoanModel loanModel,
-            Integer totalPaidMonths) {
-        boolean perDay = true;
-        BigDecimal lastMonthInterest = BigDecimal.ZERO;
-        BigDecimal previousBalance = BigDecimal.ZERO;
-        BigDecimal totalPaymentsMonth = BigDecimal.ZERO;
-        BigDecimal outstandingBalance = BigDecimal.valueOf(loanModel.getAmount());
-        BigDecimal rate = BigDecimal.valueOf(loanModel.getMonthlyInterestRate()).divide(BigDecimal.valueOf(100));
-
-        for (int month = 0; month <= totalPaidMonths; month++) {
-            previousBalance = outstandingBalance;
-            BigDecimal interestOfMonth = previousBalance.multiply(rate);
-            outstandingBalance = outstandingBalance.add(interestOfMonth);
-            LocalDate monthStart = loanModel.getStartDate().plusMonths(month);
-            LocalDate nextMonthStart = monthStart.plusMonths(1);
-            BigDecimal paymentsOfMonth = getPaymentsOfMonth(loanModel.getPayments(), monthStart, nextMonthStart);
-            totalPaymentsMonth = totalPaymentsMonth.add(paymentsOfMonth);
-            outstandingBalance = outstandingBalance.subtract(paymentsOfMonth);
-            if (month == totalPaidMonths && paymentsOfMonth.compareTo(interestOfMonth) < 0) {
-                lastMonthInterest = interestOfMonth.subtract(paymentsOfMonth).setScale(2,
-                        java.math.RoundingMode.HALF_UP);
-                perDay = false;
-            }
+    private void validateClientExists(Long clientId) {
+        if (!clientRepository.existsById(clientId)) {
+            log.warn("Client {} not found", clientId);
+            throw new ClientExitException("The client does not exist");
         }
-        loanDtoResponse.setPerDay(perDay);
-        loanDtoResponse.setCurrentMonthInterest(lastMonthInterest);
-        loanDtoResponse.setOutstandingBalance(outstandingBalance.setScale(2, java.math.RoundingMode.HALF_UP));
-        loanDtoResponse.setPrincipalOutstanding(previousBalance.setScale(2, java.math.RoundingMode.HALF_UP));
-        loanDtoResponse.setTotalPaidAmount(totalPaymentsMonth.setScale(2, java.math.RoundingMode.HALF_UP));
-        return loanDtoResponse;
-    }
-
-    private BigDecimal getPaymentsOfMonth(List<PaymentModel> payments, LocalDate monthStart, LocalDate nextMonthStart) {
-        return payments.stream()
-                .filter(p -> !p.getPaymentDate().isBefore(monthStart) && p.getPaymentDate().isBefore(nextMonthStart))
-                .map(p -> BigDecimal.valueOf(p.getAmount()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
 }

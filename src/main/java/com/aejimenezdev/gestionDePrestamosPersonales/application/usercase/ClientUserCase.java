@@ -6,7 +6,5 @@ import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.ClientDtoR
 import java.util.List;
 
 public interface ClientUserCase {
-    ClientDtoResponse saveClient(ClientDtoRequest clientDtoRequest);
-
-    List<ClientDtoResponse> findAllClient();
+    List<ClientDtoResponse> findAllProviderWithLoan(Long clientId);
 }

@@ -10,8 +10,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClientDtoResponse {
-    private UUID id;
-    private String identificationNumber;
+    private Long id;
+    private String identifier;
     private String name;
-    private String phoneNumber;
+    private String phone;
 }

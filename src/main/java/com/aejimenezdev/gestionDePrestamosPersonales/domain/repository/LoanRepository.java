@@ -7,7 +7,10 @@ import java.util.UUID;
 
 public interface LoanRepository {
 
-    List<LoanModel> findAllLoansByClientId(UUID clientId);
+    List<LoanModel> findAllLoansByClientId(Long clientId);
     LoanModel saveLoan(LoanModel loanModel);
-    Boolean existsById(UUID id);
+    Boolean existsById(Long id);
+    LoanModel findById(Long id);
+
+    List<LoanModel> findAllLoansByClientIdAndProviderId(Long clientId, Long providerId);
 }
