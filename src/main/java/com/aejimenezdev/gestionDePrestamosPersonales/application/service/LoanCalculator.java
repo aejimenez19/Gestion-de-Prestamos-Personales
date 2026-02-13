@@ -54,6 +54,9 @@ public class LoanCalculator {
     }
 
     private BigDecimal getPaymentsOfMonth(List<PaymentModel> payments, LocalDate monthStart, LocalDate nextMonthStart) {
+        if (payments == null || payments.isEmpty()) {
+            return BigDecimal.ZERO;
+        }
         return payments.stream()
                 .filter(p -> !p.getPaymentDate().isBefore(monthStart) && p.getPaymentDate().isBefore(nextMonthStart))
                 .map(p -> BigDecimal.valueOf(p.getAmount()))
