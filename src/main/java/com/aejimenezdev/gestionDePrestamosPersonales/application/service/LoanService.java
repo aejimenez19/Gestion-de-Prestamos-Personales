@@ -3,25 +3,20 @@ package com.aejimenezdev.gestionDePrestamosPersonales.application.service;
 
 import com.aejimenezdev.gestionDePrestamosPersonales.application.usercase.LoanUserCase;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.LoanModel;
-import com.aejimenezdev.gestionDePrestamosPersonales.domain.model.PaymentModel;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.ClientRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.domain.repository.LoanRepository;
 import com.aejimenezdev.gestionDePrestamosPersonales.infrastructure.Exceptions.ClientExitException;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.request.LoanDtoRequest;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanDetailDtoResponse;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanDtoResponse;
-import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanSumary;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.mapper.LoanWebMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -34,17 +29,17 @@ public class LoanService implements LoanUserCase {
     private final LoanCalculator loanCalculator;
 
     @Override
-    public LoanDtoResponse saveLoan(LoanDtoRequest loanDtoRequest) {
+    public LoanDtoResponse saveLoan(LoanDtoRequest loanDtoRequest, Long providerId) {
         log.info("Starting loan save: {}", loanDtoRequest);
         validateClientExists(loanDtoRequest.getClientId());
+        validateClientExists(providerId);
 
-        if (loanDtoRequest.getStartDate() == null || loanDtoRequest.getStartDate().toString().isBlank()) {
+        if (loanDtoRequest.getStartDate() == null) {
             LocalDate localDate = LocalDate.now();
             loanDtoRequest.setStartDate(localDate);
         }
-
-        LoanModel loanModel = loanRepository.saveLoan(loanWebMapper.toModel(loanDtoRequest));
-        return loanWebMapper.toDtoResponse(loanModel);
+        LoanModel loanModel = loanWebMapper.toModel(loanDtoRequest, providerId);
+        return buildLoanDtoResponse(loanRepository.saveLoan(loanModel));
     }
 
     @Override

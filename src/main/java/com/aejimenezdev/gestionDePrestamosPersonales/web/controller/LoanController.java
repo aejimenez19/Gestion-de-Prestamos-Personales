@@ -26,20 +26,6 @@ public class LoanController {
 
     private final LoanUserCase loanUserCase;
 
-    @Operation(summary = "Crear un nuevo préstamo", description = "Crea un préstamo para un cliente existente.")
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Préstamo creado exitosamente",
-                content = @Content(schema = @Schema(implementation = LoanDtoResponse.class))),
-        @ApiResponse(responseCode = "400", description = "Datos inválidos", content = @Content)
-    })
-    @PostMapping
-    public ResponseEntity<LoanDtoResponse> saveLoan(@Valid @RequestBody LoanDtoRequest loanDtoRequest) {
-        log.info("Received request to save loan: {}", loanDtoRequest);
-        LoanDtoResponse savedLoan = loanUserCase.saveLoan(loanDtoRequest);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(savedLoan);
-    }
-
     @Operation(summary = "Listar préstamos por cliente", description = "Obtiene todos los préstamos de un usuario dado su ID.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Operación exitosa",

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface LoanUserCase {
 
-    LoanDtoResponse saveLoan(LoanDtoRequest loanDtoRequest);
+    LoanDtoResponse saveLoan(LoanDtoRequest loanDtoRequest, Long providerId);
     List<LoanDtoResponse> findAllLoansByUserId(Long userId);
     List<LoanDtoResponse> findAllLoansByProviderId(Long clientId, Long providerId);
     LoanDetailDtoResponse findLoanById(Long clientId, Long loanId);

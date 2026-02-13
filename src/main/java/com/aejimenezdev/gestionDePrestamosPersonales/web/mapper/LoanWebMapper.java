@@ -5,11 +5,13 @@ import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.request.LoanDtoRequ
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanDetailDtoResponse;
 import com.aejimenezdev.gestionDePrestamosPersonales.web.dto.response.LoanDtoResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface LoanWebMapper {
-    LoanModel toModel(LoanDtoRequest loanDtoRequest);
+    @Mapping(target = "providerId.id", source = "providerId")
+    LoanModel toModel(LoanDtoRequest loanDtoRequest, Long providerId);
 
     LoanDtoResponse toDtoResponse(LoanModel loanModel);
 
